@@ -1,0 +1,130 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "work/main",
+  "small_model": "work/main",
+  "default_agent": "architect",
+  "enabled_providers": ["work"],
+  "share": "disabled",
+  "lsp": true,
+  "provider": {
+    "work": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Work · self-hosted model",
+      "options": {
+        "baseURL": "http://model-server.invalid/v1",
+        "apiKey": "{env:WORK_LLM_API_KEY}"
+      },
+      "models": {
+        "main": {
+          "id": "model-id",
+          "name": "Work model",
+          "tool_call": true,
+          "reasoning": true,
+          "limit": {
+            "context": 131072,
+            "output": 16384
+          }
+        }
+      }
+    }
+  },
+  "agent": {
+    "architect": {
+      "description": "Sole orchestrator: one developer and one reviewer, one PLAN.md task at a time, with final audit and commit.",
+      "mode": "primary",
+      "model": "work/main",
+      "permission": {
+        "*": "deny",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "allow",
+        "bash": "allow",
+        "question": "allow",
+        "todowrite": "allow",
+        "lsp": "allow",
+        "webfetch": "allow",
+        "skill": {
+          "*": "allow"
+        },
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/tmp/**": "allow",
+          "./**": "allow"
+        },
+        "task": {
+          "*": "deny",
+          "developer": "allow",
+          "reviewer": "allow"
+        }
+      },
+      "prompt": "{file:./prompts/architect.txt}"
+    },
+    "head-architect": {
+      "description": "Use for collaborative project architecture, requirements refinement, creation of agent-ready PLAN.md files, and exhaustive final audits after implementation is complete.",
+      "mode": "primary",
+      "model": "work/main",
+      "permission": {
+        "edit": "allow",
+        "bash": "allow",
+        "task": {
+          "*": "deny"
+        }
+      },
+      "prompt": "{file:./prompts/head-architect.txt}"
+    },
+    "developer": {
+      "description": "Role-pure developer; implements one assigned task, verifies it, and overwrites REPORT.md without invoking other agents.",
+      "mode": "subagent",
+      "model": "work/main",
+      "permission": {
+        "*": "deny",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "allow",
+        "bash": "allow",
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/tmp/**": "allow",
+          "./**": "allow"
+        },
+        "task": {
+          "*": "deny"
+        },
+        "skill": "deny"
+      },
+      "prompt": "{file:./prompts/developer.txt}"
+    },
+    "reviewer": {
+      "description": "Role-pure reviewer; independently inspects and verifies changes, then overwrites REVIEW.md without implementing or delegating.",
+      "mode": "subagent",
+      "model": "work/main",
+      "permission": {
+        "*": "deny",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": {
+          "*": "deny",
+          "REVIEW.md": "allow",
+          "**/REVIEW.md": "allow"
+        },
+        "bash": "allow",
+        "external_directory": {
+          "/tmp/**": "allow",
+          "/var/tmp/**": "allow",
+          "./**": "allow"
+        },
+        "task": {
+          "*": "deny"
+        },
+        "skill": "deny"
+      },
+      "prompt": "{file:./prompts/reviewer.txt}"
+    }
+  }
+}
