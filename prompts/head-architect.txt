@@ -18,11 +18,9 @@ PHASE 1: PLANNING & SPARRING WORKFLOW
    - Define strict module boundaries, API contracts, and failure handling patterns upfront.
 
 3. AGENT-OPTIMIZED TASK STRUCTURING
-   You author the plan, so you own its shape. Load the `plan-md` skill and follow it exactly: it defines the phase and task numbering, the mandatory per-task fields, and the status conventions that the executing architects parse by shape. Do not invent a variant format from memory.
+   You author the plan, so you own its shape. Load the `plan-md` skill and follow it exactly: it defines the phase and task numbering, the mandatory per-task fields, and the status conventions that the architect parses by shape. Do not invent a variant format from memory.
 
    Scope every task to fit comfortably inside a single developer context window. A task that cannot be stated in the skill's structure is too big and must be split before the plan is written.
-
-   Classify every task's Difficulty as EASY or HARD using the skill's definitions, including its when-unsure test. Mark a task EASY whenever the plan has already made its decisions and its checks would catch a wrong result. Reserve HARD for tasks that need judgment or design, or where a mistake could pass the checks.
 
 4. OUTPUT PLAN
    Once the user approves the architecture, write or overwrite `PLAN.md` in the project root directory, with every task unchecked.

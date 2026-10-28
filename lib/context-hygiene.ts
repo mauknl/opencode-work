@@ -18,7 +18,9 @@ import * as path from "node:path"
 //   accepted task as `task <ID>: ...` (the plan-md convention), every tool
 //   output and every block of the architect's own reasoning from before that
 //   commit is cleared. The state now lives in PLAN.md and git, and the
-//   architect's messages and tool calls stay visible. Simulated on 42 architect
+//   architect's messages and tool calls stay visible. The commit's own output
+//   stays: it is the only place the architect sees the new commit's hash, and
+//   without it the architect invents one when it reports the commit. Simulated on 42 architect
 //   sessions, the tool outputs were ~44% of architect input tokens; on the
 //   longest runs since, reasoning from finished tasks was 51-60% of what was
 //   left after that.
@@ -129,9 +131,9 @@ export function isTaskCommit(call: Entry): boolean {
 }
 
 /**
- * Tool outputs and reasoning made obsolete by a completed task: everything up
- * to and including the last successful `task <ID>:` commit. `entries` must be
- * in conversation order.
+ * Tool outputs and reasoning made obsolete by a completed task: everything
+ * before the last successful `task <ID>:` commit. The commit itself is kept.
+ * `entries` must be in conversation order.
  */
 export function selectCompletedTaskOutput(entries: Entry[]): Selection {
   let boundary = -1
@@ -140,7 +142,7 @@ export function selectCompletedTaskOutput(entries: Entry[]): Selection {
   })
   const ids: string[] = []
   let chars = 0
-  for (const call of entries.slice(0, boundary + 1)) {
+  for (const call of entries.slice(0, Math.max(boundary, 0))) {
     if (isReasoning(call)) {
       ids.push(call.id)
       chars += call.chars
