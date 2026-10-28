@@ -31,19 +31,15 @@ run:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\install.ps1 `
-  -BaseUrl https://<model-server>/v1 -Model <model-id> -ContextTokens <context-window>
+  -Provider <provider> -Model <model-id> -BaseUrl https://<model-server>/v1
 ```
 
+- `-Provider` is the provider id the agents use. If the server needs a key,
+  store it with `opencode auth login` under this same id; it then lives in
+  `auth.json`.
 - `-Model` is the id the server lists under `/v1/models`:
   `(Invoke-RestMethod https://<model-server>/v1/models).data.id` (add
-  `-Headers @{Authorization = "Bearer $env:WORK_LLM_API_KEY"}` if it needs a
-  key).
-- `-ContextTokens` must be the context size the server actually serves.
-  OpenCode compacts the conversation based on it. The default is 131072.
-  `-OutputTokens` defaults to 16384.
-- If the server needs a key, set it once as a user environment variable and
-  open a new terminal:
-  `[Environment]::SetEnvironmentVariable('WORK_LLM_API_KEY', '<key>', 'User')`
+  `-Headers @{Authorization = "Bearer <key>"}` if it needs a key).
 - The installer moves the existing `%USERPROFILE%\.config\opencode` aside to a
   timestamped backup and writes the bundle in its place. Sessions and
   credentials are not touched. Anything from the old config you still want,
@@ -52,7 +48,7 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 `
   top of this config.
 
 To update, `git pull` (or unzip the newer bundle) and run `.\install.ps1` with
-no arguments. It keeps the model settings from the current install. The
+no arguments. It keeps the provider, model and URL from the current install. The
 installer copies the files, so the clone can live anywhere.
 
 ## Use

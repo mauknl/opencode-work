@@ -1,29 +1,21 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "work/main",
-  "small_model": "work/main",
+  "model": "<PROVIDER>/<MODEL_NAME>",
+  "small_model": "<PROVIDER>/<MODEL_NAME>",
   "default_agent": "architect",
-  "enabled_providers": ["work"],
+  "enabled_providers": ["<PROVIDER>"],
   "share": "disabled",
   "lsp": true,
   "provider": {
-    "work": {
+    "<PROVIDER>": {
       "npm": "@ai-sdk/openai-compatible",
-      "name": "Work · self-hosted model",
+      "name": "",
       "options": {
-        "baseURL": "http://model-server.invalid/v1",
-        "apiKey": "{env:WORK_LLM_API_KEY}"
+        "baseURL": "<WORK_URL>"
       },
       "models": {
-        "main": {
-          "id": "model-id",
-          "name": "Work model",
-          "tool_call": true,
-          "reasoning": true,
-          "limit": {
-            "context": 131072,
-            "output": 16384
-          }
+        "<MODEL_NAME>": {
+          "name": "<MODEL_NAME>"
         }
       }
     }
@@ -32,7 +24,7 @@
     "architect": {
       "description": "Sole orchestrator: one developer and one reviewer, one PLAN.md task at a time, with final audit and commit.",
       "mode": "primary",
-      "model": "work/main",
+      "model": "<PROVIDER>/<MODEL_NAME>",
       "permission": {
         "*": "deny",
         "read": "allow",
@@ -64,7 +56,7 @@
     "head-architect": {
       "description": "Use for collaborative project architecture, requirements refinement, creation of agent-ready PLAN.md files, and exhaustive final audits after implementation is complete.",
       "mode": "primary",
-      "model": "work/main",
+      "model": "<PROVIDER>/<MODEL_NAME>",
       "permission": {
         "edit": "allow",
         "bash": "allow",
@@ -77,7 +69,7 @@
     "developer": {
       "description": "Role-pure developer; implements one assigned task, verifies it, and overwrites REPORT.md without invoking other agents.",
       "mode": "subagent",
-      "model": "work/main",
+      "model": "<PROVIDER>/<MODEL_NAME>",
       "permission": {
         "*": "deny",
         "read": "allow",
@@ -101,7 +93,7 @@
     "reviewer": {
       "description": "Role-pure reviewer; independently inspects and verifies changes, then overwrites REVIEW.md without implementing or delegating.",
       "mode": "subagent",
-      "model": "work/main",
+      "model": "<PROVIDER>/<MODEL_NAME>",
       "permission": {
         "*": "deny",
         "read": "allow",
